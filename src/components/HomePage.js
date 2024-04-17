@@ -1,14 +1,15 @@
 // src/components/HomePage.js
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Row } from 'antd';
+import axios from 'axios';
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch the most viewed products
-    // Example: axios.get('/api/products?sort=views')
-    // setProducts(response.data);
+    axios.get('/api/products?sort=views')
+      .then(response => setProducts(response.data))
+      .catch(error => console.error('Error fetching products:', error));
   }, []);
 
   return (
