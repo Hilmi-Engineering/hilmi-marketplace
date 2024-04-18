@@ -3,7 +3,7 @@
 
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import HomePage from './components/HomePage';
 import ProductPage from './components/ProductPage';
@@ -24,12 +24,12 @@ function App() {
           </Menu>
         </Header>
         <Content style={{ padding: '0 50px' }}>
-          <Switch>
+          <Routes>
             <Route exact path="/" component={HomePage} />
             <Route path="/product/:productId" component={ProductPage} />
             <Route path="/vendor/:vendorId" component={VendorPage} />
-            <Route path="/create-product" component={CreateProduct} />
-          </Switch>
+            <Route path="/create-product" element={<CreateProduct/>} />
+          </Routes>
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
       </Layout>
