@@ -1,23 +1,26 @@
-// src/components/CreateProduct.js
 import React, { useState } from "react";
 import { Button, Input, Form, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { createProduct } from "../api/api"; // Adjust the path as necessary
 
 const CreateProduct = () => {
-  const [file, setFile] = useState(null);
+  const [fileList, setFileList] = useState([]);
 
-  const handleFileChange = (info) => {
-    console.log("IN FILE CHANGE HANDLER")
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-      setFile(info.file.originFileObj);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
+  const handleFileChange = ({ file, fileList: newFileList }) => {
+    // Filter to ensure only the last uploaded file is kept in case multiple selections are made
+    const latestFileList = newFileList.slice(-1);
+
+    setFileList(latestFileList); // Set the file list to include only the last uploaded file
+
+    if (file.status === "done") {
+      message.success(`${file.name} file uploaded successfully`);
+    } else if (file.status === "error") {
+      message.error(`${file.name} file upload failed.`);
     }
   };
 
   const handleSubmit = (values) => {
+    const file = fileList.length ? fileList[0].originFileObj : null;
     if (!file) {
       message.error("Please upload a file!");
       return;
@@ -26,6 +29,7 @@ const CreateProduct = () => {
       .then((response) => {
         message.success("Product created successfully");
         console.log(response.data);
+        setFileList([]); // Clear file list after submission
       })
       .catch((error) => {
         message.error("Failed to create product");
@@ -55,8 +59,11 @@ const CreateProduct = () => {
           <Upload
             name="logo"
             listType="picture"
-            beforeUpload={() => false}
+            fileList={fileList}
+            beforeUpload={() => false}  // Disable automatic uploading
             onChange={handleFileChange}
+            onRemove={() => setFileList([])}
+            accept="image/*"  // Optional: only allow image files
           >
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
